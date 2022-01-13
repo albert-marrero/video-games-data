@@ -1,0 +1,65 @@
+name: Weekly Extract
+
+on:
+  schedule:
+    - cron:  '05 8 * * 0'
+
+
+jobs:
+  # Label of the container job
+  scraper-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `scraper-job` executes in
+    container: albertmarrero/video-game-web-scraper:v0.0.1
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Crawls VideoGameGeek Hot XML API
+      - name: Crawls VideoGameGeek Games
+        run: scrapy crawl vgg-games -O weekly/videogamegeek/games.json
+      
+      # Uploads Weekly Data Artifacts
+      - name: Uploads Weekly Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: weekly-extract
+          path: weekly
+          retention-days: 30
+
+  # Label of the job
+  upload-data:
+    needs: [scraper-job]
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Downloads all workflow artifacts
+      - name: Downloads all workflow artifacts
+        uses: actions/download-artifact@v2
+      
+      # Checkout Video Game Data Repo
+      - name: Checkout Video Game Data Repo
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          path: data
+      
+      # Move workflow artifacts to data repo
+      - name: Move workflow artifacts to data repo
+        run: |
+          ls -R
+          mv weekly-extract/videogamegeek/games.json data/videogamegeek/games/"`date +"%Y-%m-%d"`".json
+      
+      # Checkin Video Game Data Repo
+      - name: Checkin Video Game Data Repo
+        run: |
+          cd data
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "`date +"%Y-%m-%d:%H:%M:%S"`"
+          git push
+      
+
