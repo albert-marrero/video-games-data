@@ -3,7 +3,7 @@
 [![Daily Extract](https://github.com/albert-marrero/video-games-data/actions/workflows/daily-extracts.yml/badge.svg)](https://github.com/albert-marrero/video-games-data/actions/workflows/daily-extracts.yml)
 [![Weekly Extract](https://github.com/albert-marrero/video-games-data/actions/workflows/weekly-extracts.yml/badge.svg)](https://github.com/albert-marrero/video-games-data/actions/workflows/weekly-extracts.yml)
 
-Video Games Data is a project that provides video game related data to explore and analyze for data data enthusiastsm, data scientists and machine learning practitioners.
+Video Games Data is a project that provides video game related data to explore and analyze for data enthusiasts, data scientists and machine learning practitioners.
 
 The data was captured by using an open-source and collaborative framework named [Scrapy] that crawls websites and extracts boardgame related data from the sources pages.
 
